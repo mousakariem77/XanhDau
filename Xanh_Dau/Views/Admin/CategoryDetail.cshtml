@@ -1,0 +1,57 @@
+@model Xanh_Dau.DTO.CategoryDTO
+@{
+    ViewData["Title"] = "Category Detail Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+
+<div class="admin_category-detail min-h-screen bg-gray-100">
+    <div class="category-detail-container w-full h-full mx-auto bg-white shadow-lg rounded-lg p-6 relative">
+        
+        <!-- Nút Quay lại -->
+        <a asp-controller="Admin" asp-action="Category"
+            class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-200 
+            text-gray-800 dark:text-white dark:hover:bg-gray-600 rounded-full shadow-md transition-all duration-300 hover:-translate-x-1">
+            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" 
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Quay lại</span>
+        </a>
+
+        <!-- Tiêu đề -->
+        <h3 class="text-2xl font-bold text-gray-900 border-b pb-3 mb-4 text-center">Xem chi tiết danh mục</h3>
+
+        <!-- Thông tin danh mục -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-800">@Model.Category.Name</h1>
+            <p class="text-gray-500 text-sm mt-3">Mã danh mục: <span class="font-semibold">@Model.Category.CategoryId</span></p>
+        </div>
+
+        <!-- Mô tả -->
+        <p class="text-gray-700 bg-gray-50 p-4 rounded-md border border-gray-200">
+            <span class="font-semibold text-gray-800">Mô tả:</span> @Model.Category.Description
+        </p>
+
+        <!-- Thông tin chi tiết -->
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Thông tin chi tiết</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border border-gray-200 p-4 rounded-lg bg-gray-50">
+                <div><p class="text-gray-700"><span class="font-semibold">Mã danh mục cha:</span> @Model.Category.ParentId</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Trạng thái:</span> @Model.Category.Status</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Người tạo:</span> @Model.Category.CreatedBy</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Ngày tạo:</span> @Model.Category.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Người cập nhật:</span> @Model.Category.UpdatedBy</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Ngày cập nhật:</span> @Model.Category.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Người xóa:</span> @Model.Category.DeletedBy</p></div>
+                <div><p class="text-gray-700"><span class="font-semibold">Ngày xóa:</span> @Model.Category.DeletedAt?.ToString("dd/MM/yyyy HH:mm")</p></div>
+                <div class="sm:col-span-2">
+                    <p class="text-gray-700"><span class="font-semibold">Đã xóa:</span> @(Model.Category.IsDeleted.HasValue && Model.Category.IsDeleted.Value ? "Có" : "Không")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

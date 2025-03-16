@@ -1,0 +1,252 @@
+@model Xanh_Dau.DTO.DashboardDTO
+@{
+    ViewData["Title"] = "Dashboard Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<div class="flex flex-col lg:flex-row h-screen bg-gray-100">
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+        <h3 class="text-xl font-semibold text-gray-800 mb-6">Bảng điều khiển</h3>
+
+        <!-- Revenue Overview Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-blue-500 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-700">Tổng Quan Doanh Thu</h3>
+                    <svg class="w-8 h-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3m12 6h-6m3 3v3m0 3v3"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-gray-900 mt-4">@Model.TotalRevenue.ToString("N0")đ</p>
+                <p class="text-gray-600 mt-2">Doanh thu hiện tại từ lúc phát triển đến nay</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-green-500 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-700">Thống Kê Đơn Hàng</h3>
+                    <svg class="w-8 h-8 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m0 0l6 6m-6-6l6-6"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-gray-900 mt-4">@Model.TotalOrders đơn hàng</p>
+                <p class="text-gray-600 mt-2">Tổng số đơn hàng (không bao gồm đơn hủy)</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-yellow-500 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-700">Thống Kê Người Dùng</h3>
+                    <svg class="w-8 h-8 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12A4 4 0 1 0 8 12a4 4 0 1 0 8 0zM12 14v8m-6-6h12"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-gray-900 mt-4">@Model.ListCustomers.Count() người dùng</p>
+                <p class="text-gray-600 mt-2">Số lượng người dùng hiện tại</p>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-purple-500 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-700">Thống Kê Sản Phẩm</h3>
+                    <svg class="w-8 h-8 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3m12 6h-6m3 3v3m0 3v3"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-gray-900 mt-4">@Model.ListProducts.Count() sản phẩm</p>
+                <p class="text-gray-600 mt-2">Số lượng sản phẩm đã có trong kho</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-xl border-l-4 border-teal-500 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-700">Các Hoạt Động Gần Đây</h3>
+                    <svg class="w-8 h-8 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7v14"/>
+                    </svg>
+                </div>
+                <p class="text-gray-600 mt-2">Cập nhật hoạt động gần đây của bạn trong hệ thống</p>
+            </div>
+        </div>
+
+
+        <!-- Charts & Analytics -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Biểu Đồ Đăng Ký Tài Khoản</h3>
+            <canvas id="userChart" class="h-64"></canvas>
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-100 mb-4">
+            <!-- Active Coupon Codes -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex justify-between items-center">
+                    <span>Người dùng mới đăng ký</span>
+                    <a asp-controller="Admin" asp-action="Customer" class="text-sm text-blue-600 hover:underline">Xem tất cả</a>
+                </h3>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-gray-500 text-sm">
+                            <th class="py-2">Tên</th>
+                            <th class="py-2">Email</th>
+                            <th class="py-2">Ngày</th>
+                            <th class="py-2">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700 text-sm">
+                        @foreach(var customer in Model.ListCustomers.OrderByDescending(c => c.CreatedAt).Take(3))
+                        {
+                            <tr class="border-t">
+                                <td class="py-2">@customer.LastName @customer.FirstName</td>
+                                <td class="py-2">@customer.Email</td>
+                                <td class="py-2">@customer.CreatedAt</td>
+                                <td class="py-2">@customer.Status</td>
+                            </tr>
+                        }
+                    
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Website Traffic Overview -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex justify-between items-center">
+                    <span>Doanh mục sản phẩm</span>
+                    <a asp-controller="Admin" asp-action="Category" class="text-sm text-blue-600 hover:underline">Xem chi tiết</a>
+                </h3>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-gray-500 text-sm">
+                            <th class="py-2">ID</th>
+                            <th class="py-2">Tên Doanh mục</th>
+                            <th class="py-2">Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700 text-sm">
+                        @foreach(var category in Model.ListCategories.OrderByDescending(c => c.CreatedAt).Take(3))
+                        {
+                            <tr class="border-t">
+                                <td class="py-2">@category.CategoryId</td>
+                                <td class="py-2">@category.Name</td>
+                                <td class="py-2">@category.CreatedAt</td>
+                            </tr>
+                        }
+                    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-3">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4 flex justify-between items-center">
+                <span>Đơn hàng mới nhất</span>
+                <a asp-controller="Admin" asp-action="Order" class="text-sm text-blue-600 hover:underline">Xem tất cả</a>
+            </h3>
+            <table class="w-full text-left">
+                <thead>
+                <tr class="text-gray-500 text-sm">
+                    <th class="py-2">Mã đơn</th>
+                    <th class="py-2">Khách hàng</th>
+                    <th class="py-2">Ngày đặt</th>
+                    <th class="py-2">Trạng thái</th>
+                    <th class="py-2 text-right">Tổng thanh toán</th>
+                </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm">
+                    @foreach(var orders in Model.ListOrders.OrderByDescending(c => c.CreatedAt).Take(4))
+                    {
+                        <tr class="border-t">
+                            <td class="py-2">@orders.OrderId</td>
+                            <td class="py-2">@orders.Receiver</td>
+                            <td class="py-2">@orders.CreatedAt</td>
+                            <td class="py-2">
+                                <div class="relative">
+                                    <span class="px-4 py-2 rounded-full 
+                                        @(orders.Status == "pending" ? "text-yellow-600" :
+                                            orders.Status == "processed" ? "text-blue-600" :
+                                            orders.Status == "completed" ? "text-green-600" :
+                                                            "bg-red-100 text-red-600")">
+                                        @(orders.Status == "pending" ? "Đang xử lý" :
+                                        orders.Status == "processed" ? "Đã xử lý" :
+                                        orders.Status == "completed" ? "Hoàn thành" : "Đã hủy")
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-2 text-right">@orders.TotalPrice đ</td>
+                        </tr>
+
+                    }
+                
+                </tbody>
+            </table>
+        </div> 
+
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("userChart").getContext("2d");
+
+        // Lấy dữ liệu từ Model
+        var months = @Html.Raw(Json.Serialize(Model.UserRegistrationMonths)); // ['Jan', 'Feb', ..., 'Dec']
+        var counts = @Html.Raw(Json.Serialize(Model.UserRegistrationCounts)); // [20, 30, ..., 100]
+
+        var userChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: months,
+                datasets: [{
+                    label: "Số người đăng ký",
+                    data: counts,
+                    borderColor: "#4CAF50",
+                    backgroundColor: "rgba(76, 175, 80, 0.2)",
+                    pointBackgroundColor: "#4CAF50",
+                    pointBorderColor: "#fff",
+                    pointHoverRadius: 6,
+                    pointRadius: 5,
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function (context) {
+                                return ` ${context.raw} người`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Tháng",
+                            font: { weight: "bold" }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Số lượng đăng ký",
+                            font: { weight: "bold" }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

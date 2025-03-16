@@ -1,0 +1,110 @@
+@model Xanh_Dau.DTO.ProductDTO
+@{
+    ViewData["Title"] = "Product Detail Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+
+<div class="admin_product-detail min-h-screen bg-gray-100">
+    <div class="w-full mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+        <!-- Nút Quay lại -->
+        <a asp-controller="Admin" asp-action="Product"
+            class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-200 
+            text-gray-800 dark:text-white dark:hover:bg-gray-600 rounded-full shadow-md transition-transform duration-300 hover:-translate-x-1">
+            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" 
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Quay lại</span>
+        </a>
+
+        <!-- Tiêu đề -->
+        <h3 class="text-2xl font-bold text-gray-800 text-center mb-6">Chi tiết sản phẩm</h3>
+
+        <!-- Layout thông tin sản phẩm -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <!-- Hình ảnh sản phẩm -->
+            <div class="relative">
+                @foreach (var productImg in Model.ListProductImages)
+                {
+                    if (productImg.ProductId == Model.Product.ProductId && productImg.IsPrimary == true)
+                    {
+                        <div class="main-img-container rounded-lg shadow-lg overflow-hidden bg-gray-200">
+                            <img id="mainImage" src="@productImg.ImageUrl" alt="Main Product Image"
+                                 class="object-cover w-full h-96 transition-transform duration-300 hover:scale-105">
+                        </div>
+                    }
+                }
+
+                <!-- Thumbnails -->
+                <div class="flex justify-center space-x-3 mt-4">
+                    @foreach (var productImg in Model.ListProductImages)
+                    {
+                        <div class="h-20 w-20 overflow-hidden rounded-lg border hover:shadow-md cursor-pointer transition-transform duration-300 hover:scale-110"
+                             onclick="document.getElementById('mainImage').src='@productImg.ImageUrl'">
+                            <img src="@productImg.ImageUrl" alt="Thumbnail @productImg.ImageId" class="object-cover w-full h-full">
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Thông tin sản phẩm -->
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">@Model.Product.Name</h1>
+                <p class="text-gray-500 text-sm mt-1">Mã sản phẩm: <span class="font-medium">@Model.Product.ProductId</span></p>
+
+                <!-- Giá -->
+                <p class="text-xl font-semibold text-green-600 mt-3">
+                    @string.Format("{0:N0} VNĐ", Model.Product.Price)
+                </p>
+
+                <!-- Mô tả -->
+                <p class="text-gray-700 mt-4">@Model.Product.Description</p>
+
+                <!-- Trạng thái sản phẩm -->
+                <div class="mt-4 flex items-center space-x-3">
+                    @if (Model.Product.Status == "Available")
+                    {
+                        <span class="bg-green-100 text-green-700 text-xs font-semibold rounded-full px-3 py-1">Còn hàng</span>
+                    }
+                    else
+                    {
+                        <span class="bg-red-100 text-red-700 text-xs font-semibold rounded-full px-3 py-1">Hết hàng</span>
+                    }
+                    <span class="text-gray-600">Số lượng: @Model.Product.StockQuantity</span>
+                </div>
+
+                <!-- Thông tin chi tiết -->
+                <div class="mt-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-3">Thông tin chi tiết</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                        <p><span class="font-semibold">Danh mục:</span> @Model.Product.CategoryId</p>
+                        <p><span class="font-semibold">Ngày tạo:</span> @Model.Product.CreatedAt</p>
+                        <p><span class="font-semibold">Người tạo:</span> @Model.Product.CreatedBy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainImage');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', () => {
+            const newSrc = thumbnail.getAttribute('data-src');
+            mainImage.src = newSrc;
+
+            // Thêm hiệu ứng viền
+            thumbnails.forEach(thumb => thumb.parentNode.classList.remove('ring', 'ring-blue-500'));
+            thumbnail.parentNode.classList.add('ring', 'ring-blue-500');
+        });
+    });
+</script>
+ 

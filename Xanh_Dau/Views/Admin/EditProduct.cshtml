@@ -1,0 +1,135 @@
+@model Xanh_Dau.DTO.ProductDTO
+@{
+    ViewData["Title"] = "Product Detail Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+
+<div class="admin_product-detail min-h-screen bg-gray-100">
+    <div class="w-full mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+        <!-- Nút Quay lại -->
+        <a asp-controller="Admin" asp-action="Product"
+            class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-200 
+            text-gray-800 dark:text-white dark:hover:bg-gray-600 rounded-full shadow-md transition-transform duration-300 hover:-translate-x-1">
+            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" 
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Quay lại</span>
+        </a>
+
+        <!-- Tiêu đề -->
+        <h3 class="text-2xl font-bold text-gray-800 text-center mb-6">Chỉnh sửa sản phẩm</h3>
+
+        <form asp-controller="Admin" asp-action="EditProduct" method="post">
+            <input type="hidden" name="Product.ProductId" value="@Model.Product.ProductId" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <!-- Hình ảnh sản phẩm -->
+                <div class="relative">
+                    @foreach (var productImg in Model.ListProductImages)
+                    {
+                        if (productImg.ProductId == Model.Product.ProductId && productImg.IsPrimary == true)
+                        {
+                            <div class="main-img-container rounded-lg shadow-lg overflow-hidden bg-gray-200">
+                                <img id="mainImage" src="@productImg.ImageUrl" alt="Main Product Image"
+                                    class="object-cover w-full h-96 transition-transform duration-300 hover:scale-105">
+                            </div>
+                        }
+                    }
+
+                    <!-- Thumbnails -->
+                    <div class="flex justify-center space-x-3 mt-4">
+                        @foreach (var productImg in Model.ListProductImages)
+                        {
+                            <div class="h-20 w-20 overflow-hidden rounded-lg border hover:shadow-md cursor-pointer transition-transform duration-300 hover:scale-110"
+                                onclick="document.getElementById('mainImage').src='@productImg.ImageUrl'">
+                                <img src="@productImg.ImageUrl" alt="Thumbnail @productImg.ImageId" class="object-cover w-full h-full">
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Thông tin sản phẩm -->
+                <div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Tên sản phẩm</label>
+                        <input type="text" name="Product.Name" value="@Model.Product.Name"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Giá sản phẩm (VNĐ)</label>
+                        <input type="number" name="Product.Price" value="@Model.Product.Price"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Mô tả</label>
+                        <textarea name="Product.Description" rows="4"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">@Model.Product.Description</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Số lượng</label>
+                        <input type="number" name="Product.StockQuantity" value="@Model.Product.StockQuantity"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Trạng thái</label>
+                        <select name="Product.Status"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                            <option value="Available" selected="@(Model.Product?.Status == "Available")">Còn hàng</option>
+                            <option value="OutOfStock" selected="@(Model.Product?.Status == "OutOfStock")">Hết hàng</option>
+                        </select>
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold">Danh mục</label>
+                        <select name="Product.CategoryId"
+                            class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-300">
+                            @foreach (var category in Model.ListCategories)
+                            {
+                                <option value="@category.CategoryId" selected="@(Model.Product?.CategoryId == category.CategoryId)">
+                                    @category.Name
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+
+                    <!-- Nút Lưu -->
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition-all duration-300">
+                            Cập nhật sản phẩm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainImage');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', () => {
+            const newSrc = thumbnail.getAttribute('data-src');
+            mainImage.src = newSrc;
+
+            // Thêm hiệu ứng viền
+            thumbnails.forEach(thumb => thumb.parentNode.classList.remove('ring', 'ring-blue-500'));
+            thumbnail.parentNode.classList.add('ring', 'ring-blue-500');
+        });
+    });
+</script>

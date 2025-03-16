@@ -1,0 +1,76 @@
+@model Xanh_Dau.DTO.CustomerDTO
+@{
+    ViewData["Title"] = "Customer Detail Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+
+<div class="admin_customer-detail w-full h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-center">
+    <div class="w-full h-full overflow-y-auto p-6 rounded-lg shadow-xl relative">
+        <!-- Nút Quay lại -->
+        <a asp-controller="Admin" asp-action="Customer"
+            class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-200 
+            text-gray-800 dark:text-white dark:hover:bg-gray-600 rounded-full shadow-md transition-transform duration-300 hover:-translate-x-1">
+            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" 
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Quay lại</span>
+        </a>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-5 text-center">Thông tin chi tiết khách hàng</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            <!-- Avatar -->
+            <div class="flex justify-center">
+                <div class="relative w-36 h-36 rounded-full overflow-hidden border-4 border-gray-300">
+                    @if(@Model.Customer.Picture == null)
+                    {
+                        <img src="/img/avatar.jpg" alt="Avatar" class="object-cover w-full h-full">
+                    }
+                    else
+                    {
+                        <img src="@Model.Customer.Picture" alt="Avatar" class="object-cover w-full h-full">
+                    }
+                </div>
+            </div>
+
+            <!-- Customer Details -->
+            <div class="md:col-span-2">
+                <h1 class="text-2xl font-bold text-gray-900">@Model.Customer.FirstName @Model.Customer.LastName</h1>
+                <p class="text-gray-500 text-sm mb-2">Mã khách hàng: @Model.Customer.CustomerId</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <p class="text-gray-700"><span class="font-semibold">📧 Email:</span> <span class="text-blue-600">@Model.Customer.Email</span></p>
+                    <p class="text-gray-700"><span class="font-semibold">📞 Số điện thoại:</span> @Model.Customer.PhoneNumber</p>
+                    <p class="text-gray-700"><span class="font-semibold">🚻 Giới tính:</span> @Model.Customer.Gender</p>
+                    <p class="text-gray-700"><span class="font-semibold">🎂 Ngày sinh:</span> @(Model.Customer.Dob.HasValue ? Model.Customer.Dob.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")</p>
+                    <p class="text-gray-700 col-span-2"><span class="font-semibold">🏠 Địa chỉ:</span> @Model.Customer.Address</p>
+                </div>
+
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    <span class="inline-block bg-green-100 text-green-700 text-xs font-semibold rounded-full px-3 py-1">
+                        Trạng thái: @Model.Customer.Status
+                    </span>
+                    <span class="inline-block text-gray-500 text-sm">🔄 Lần đăng nhập cuối: @Model.Customer.LastLogin</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-6 border-t pt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Thông tin hệ thống</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p class="text-gray-600"><span class="font-semibold">📅 Tạo ngày:</span> @Model.Customer.CreatedAt</p>
+                <p class="text-gray-600"><span class="font-semibold">✍️ Cập nhật bởi:</span> @Model.Customer.UpdatedBy</p>
+                <p class="text-gray-600"><span class="font-semibold">🕒 Cập nhật lúc:</span> @Model.Customer.UpdatedAt</p>
+                <p class="text-gray-600">
+                    <span class="font-semibold">🗑️ Đã xóa:</span> @(Model.Customer.IsDeleted.HasValue && Model.Customer.IsDeleted.Value ? "Có" : "Không")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

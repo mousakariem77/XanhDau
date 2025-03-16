@@ -1,0 +1,64 @@
+@model Xanh_Dau.DTO.AdminDTO
+@{
+    ViewData["Title"] = "Admin Detail Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="~/css/site.css"/>
+<link rel="stylesheet" href="~/tailwind/build/tailwind.css">
+<link rel="stylesheet" href="~/fonts/boxicons.css"/>
+<script src="~/js/site.js"></script>
+
+<div class="admin_customer-detail w-full h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-center">
+    <div class="w-full h-full overflow-y-auto p-6 rounded-lg shadow-xl relative">
+        <!-- Nút Quay lại -->
+        <a asp-controller="Admin" asp-action="Manage"
+            class="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 border border-gray-300 bg-white hover:bg-gray-200 
+            text-gray-800 dark:text-white dark:hover:bg-gray-600 rounded-full shadow-md transition-transform duration-300 hover:-translate-x-1">
+            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" 
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Quay lại</span>
+        </a>
+        <!-- Tiêu đề -->
+        <h3 class="text-2xl font-semibold text-gray-800 mb-5 text-center">Chi tiết Quản trị viên</h3>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+            <!-- Ảnh đại diện -->
+            <div class="relative w-40 h-40 rounded-full overflow-hidden shadow-lg border-4 border-gray-300">
+                <img src="/img/avatar.jpg" alt="Admin Avatar" class="object-cover w-full h-full">
+            </div>
+
+            <!-- Thông tin Admin -->
+            <div class="flex-1 space-y-3">
+                <h1 class="text-3xl font-semibold text-gray-900">@Model.Admin.FirstName @Model.Admin.LastName</h1>
+                <p class="text-gray-600">Mã Admin: <span class="font-medium">@Model.Admin.AdminId</span></p>
+                <p class="text-lg text-gray-700 font-semibold">Username: <span class="text-blue-600">@Model.Admin.Username</span></p>
+                <p class="text-lg text-gray-700 font-semibold">Email: <span class="text-blue-600">@Model.Admin.Email</span></p>
+                <p class="text-gray-700"><span class="font-semibold">Vai trò:</span> @Model.Admin.Role</p>
+
+                <!-- Trạng thái với màu sắc -->
+                <p class="text-gray-700">
+                    <span class="font-semibold">Trạng thái:</span>
+                    <span class="px-3 py-1 rounded-full text-white text-sm font-medium
+                        @(Model.Admin.Status == "Active" ? "bg-green-500" : "bg-yellow-500")">
+                        @(Model.Admin.Status == "Active" ? "Hoạt động" : "Không hoạt động")
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Thông tin chi tiết -->
+        <div class="mt-8 border-t pt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Thông tin Hệ thống</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
+                <p><span class="font-semibold">Thời gian tạo:</span> @Model.Admin.CreatedAt</p>
+                <p><span class="font-semibold">Thời gian cập nhật:</span> @Model.Admin.UpdatedAt</p>
+                <p><span class="font-semibold">Lần đăng nhập cuối:</span> @Model.Admin.LastLogin</p>
+                <p><span class="font-semibold">Đổi mật khẩu gần nhất:</span> @Model.Admin.LastPasswordChange</p>
+            </div>
+        </div>
+    </div>
+</div>
+
